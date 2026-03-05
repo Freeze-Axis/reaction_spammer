@@ -1,0 +1,681 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!----------------------------------------------------------------->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#a9ceec" />
+
+  <title>Freeze☭リアクションスパム</title>
+  <meta name="description" content="" />
+
+  <link rel="icon" href="https://i.ibb.co/39dXLvV3/Freeze-logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Freeze" />
+  <meta property="og:title"       content="リアクションスパムツール" />
+  <meta property="og:description" content="ノーコメント" />
+  <meta property="og:url"         content="" />
+  <meta property="og:image"       content="" />
+<!----------------------------------------------------------------->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #202225; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #5865f2; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #7289da; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #2f3136, #1e1f22);
+      color: #fff;
+      margin: 0; padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      /* disable text selection globally except on inputs */
+      user-select: none;
+    }
+
+    /* allow selecting text inside form fields */
+    input, textarea, select {
+      user-select: text;
+    }
+    .card {
+      background: #36393f;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+      width: 100%;
+      max-width: 600px;
+      animation: fadeIn .8s ease;
+      overflow: auto;
+      max-height: 95vh;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    h2 { color: #adb8ff; text-align: center; margin: 0 0 24px; font-weight: 600; }
+    label { display: block; margin-top: 18px; font-size: 14px; font-weight: 500; }
+
+    input[type="text"], input[type="password"], textarea {
+      width:100%; padding:10px; margin-top:6px; padding-right:36px;
+      border-radius:8px; border:none;
+      background:#202225; color:#fff;
+      font-family:monospace; resize:vertical;
+    }
+    input[type="number"] {
+      width: 100%; padding: 10px; margin-top: 6px;
+      border-radius: 8px; border: 1px solid #202225;
+      background: #202225; color: #fff;
+      font-family: monospace; appearance: textfield; -moz-appearance: textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+
+    .input-group {
+      display: flex; align-items: center; margin-top: 6px;
+    }
+    .input-group input {
+      flex: 1; margin: 0;
+    }
+    .toggle-btn {
+      background: #4f545c; border: none; border-radius: 8px;
+      color: #fff; padding: 10px; margin-left: 8px; cursor: pointer;
+      font-size: 16px; transition: background .3s;
+    }
+    .toggle-btn:hover {
+      background: #5a5f68;
+    }
+
+    .row { display: flex; gap: 16px; align-items: center; margin-top: 12px; }
+    .row > div { flex: 1; }
+
+    .checkbox-container {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: 14px; user-select: none; margin-top: 12px;
+    }
+    .checkbox-container input {
+      appearance: none; width: 36px; height: 18px; background: #4f545c;
+      border-radius: 18px; position: relative; transition: background .3s ease;
+    }
+    .checkbox-container:hover input { background: #5a5f68; }
+    .checkbox-container input::before {
+      content: ''; position: absolute; width: 14px; height: 14px;
+      border-radius: 50%; background: #fff; top: 2px; left: 2px;
+      transition: transform .3s cubic-bezier(.68,-.55,.27,1.55);
+    }
+    .checkbox-container input:checked { background: #7289da; }
+    .checkbox-container input:checked::before { transform: translateX(18px); }
+    .checkbox-container input:checked + span { color: #adb8ff; }
+
+    button {
+      padding: 10px 16px; border: none; border-radius: 8px;
+      color: #fff; font-weight: 600; font-size: 14px;
+      cursor: pointer; transition: all .3s;
+    }
+    button.primary {
+      margin-top: 24px; width: 100%; padding: 14px;
+      background: linear-gradient(135deg,#6d75ff,#5865f2);
+      font-size: 18px; box-shadow: 0 4px 15px rgba(88,101,242,.4);
+    }
+    button.primary:hover {
+      background: linear-gradient(135deg,#7d89ff,#4e57e0);
+      box-shadow: 0 6px 22px rgba(88,101,242,.6);
+      transform: translateY(-2px);
+    }
+    button.secondary {
+      background: #4f545c;
+    }
+    button.secondary:hover {
+      background: #5a5f68;
+    }
+    button.danger {
+        background: #e74c3c;
+    }
+    button.danger:hover {
+        background: #c0392b;
+    }
+    button:disabled {
+      cursor: not-allowed; background: #3e4147 !important; color: #9a9a9a;
+      transform: none; box-shadow: none;
+    }
+    .button-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    #channelListContainer {
+      margin-top: 12px; padding: 10px; max-height: 250px;
+      overflow-y: auto; background: #202225; border-radius: 8px;
+      border: 1px solid #2f3136;
+    }
+    .channel-category {
+      padding: 4px 8px; color: #96989d; font-size: 12px;
+      font-weight: 600; text-transform: uppercase; margin-top: 10px;
+    }
+    .channel-category:first-child { margin-top: 0; }
+    .channel-item {
+      display: block; padding: 6px 8px 6px 18px;
+      border-radius: 5px; transition: background-color .2s;
+    }
+    .channel-item.disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (hover: hover) {
+      .channel-item:not(.disabled):hover { background-color: #36393f; }
+    }
+    .channel-item label { margin-top: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; position: relative;}
+    .channel-item span { color: #96989d; }
+    .channel-item label span { color: #dcddde; }
+    .voice-channel-item {
+      display: block; padding: 6px 8px 6px 18px;
+      border-radius: 5px; transition: background-color .2s;
+    }
+    .voice-channel-item.disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (hover: hover) {
+      .voice-channel-item:not(.disabled):hover { background-color: #36393f; }
+    }
+    .voice-channel-item label { margin-top: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; position: relative; }
+    .voice-channel-icon {
+      font-size: 18px; margin-right: -8px; opacity: 0.6;
+      transition: all .2s ease;
+    }
+    .voice-channel-item.selected .voice-channel-icon {
+      opacity: 1; color: #7289da;
+    }
+    .voice-channel-item span { color: #96989d; }
+    .voice-channel-item.selected span { color: #dcddde; }
+
+    /* Custom checkbox styles */
+    .custom-checkbox-item input[type="checkbox"] {
+      opacity: 0; position: absolute;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .custom-checkbox-item input[type="checkbox"]:focus { outline: none; }
+    .custom-checkbox-item input[type="checkbox"]:active { outline: none; }
+    .custom-checkbox-item label::before {
+      content: '';
+      width: 16px; height: 16px;
+      border: 2px solid #4f545c;
+      border-radius: 3px;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .custom-checkbox-item label.checked::before {
+      content: '✓';
+      background: #7289da;
+      border-color: #7289da;
+    }
+
+    #log { margin-top: 20px; padding: 10px; height: 150px; overflow-y: auto; background: #202225; border-radius: 10px; font-family: monospace; font-size: 12px; white-space: pre-wrap; resize: vertical;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Freeze☭リアクションスパム</h2>
+    <form id="form">
+      <label for="token">TOKEN</label>
+      <div style="position:relative;">
+        <input type="password" id="token" placeholder="TOKENを入力" style="width:100%;padding-right:36px;">
+        <button type="button" id="toggleTokenBtn" aria-label="マスク切替" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; padding:0; margin:0; cursor:pointer; width:24px; height:24px; display:flex; align-items:center; justify-content:center; opacity:0.7;">
+          <span id="tokenMaskIcon">
+            <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <label for="guildId">サーバーID</label>
+      <input type="text" id="guildId" required placeholder="123456789012345678">
+      
+      <button type="button" id="fetchChannelsBtn" class="secondary" style="margin-top: 12px; width: 100%;">チャンネルリスト取得</button>
+
+      <div id="channelListContainer" style="display: none;"></div>
+      
+      <hr style="border-color: #4f545c; margin: 24px 0;">
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="useExternalEmojis">
+        <span>Nitro 絵文字</span>
+      </label>
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="reverseOrder">
+        <span>古いメッセージからリアクションする</span>
+      </label>
+
+      <div>
+        <label for="messageLimit">メッセージ数</label>
+        <input type="number" id="messageLimit" min="1" max="100" value="10">
+      </div>
+      
+      <div>
+        <label for="interval">インターバル (ms)</label>
+        <input type="number" id="interval" min="0" max="5000" value="500">
+      </div>
+
+      <button id="submitBtn" type="submit" class="primary" disabled>リアクション開始</button>
+      <div class="button-group">
+        <button id="stopBtn" type="button" class="danger" disabled>停止</button>
+      </div>
+    </form>
+
+    <div id="log"></div>
+  </div>
+
+<script>
+const API_BASE = 'https://discord.com/api/v10';
+let isRunning = false;
+
+// ローカルストレージキー
+const STORAGE_PREFIX = 'reactionSpammer_';
+const STORAGE_KEYS = {
+  token: 'token',
+  guildId: 'guildId',
+  emoji: 'emoji',
+  useExternalEmojis: 'useExternalEmojis',
+  messageLimit: 'messageLimit',
+  reverseOrder: 'reverseOrder',
+  interval: 'interval',
+  channels: 'channels'
+};
+
+// Nitro 用に固定しておく絵文字リスト（ユーザー入力不要）
+// `flash_1` ～ `flash_20` の ID で定義。Discord API には "name:id" の形式で渡す。
+// Nitro が有効なときはこの配列の全てを各メッセージに順番に付与する。
+const NITRO_EMOJIS = [
+  'flash_1:1479134992129982616',
+  'flash_2:1479134994902417611',
+  'flash_3:1479134997997944973',
+  'flash_4:1479135000275456207',
+  'flash_5:1479135003765112982',
+  'flash_6:1479135005535113427',
+  'flash_7:1479135008672186510',
+  'flash_8:1479135011213938954',
+  'flash_9:1479135012992323646',
+  'flash_10:1479135015311769693',
+  'flash_11:1479135017132228629',
+  'flash_12:1479135020332617738',
+  'flash_13:1479135022895206571',
+  'flash_14:1479135025092890658',
+  'flash_15:1479135027420729354',
+  'flash_16:1479135030013067347',
+  'flash_17:1479135032164745286',
+  'flash_18:1479135035046236282',
+  'flash_19:1479135037277343784',
+  'flash_20:1479135039269900369'
+];
+
+// Nitroオフ時に使用する固定絵文字セット（画像の順）
+const DEFAULT_EMOJIS = [
+  '🪞', // 鏡
+  '🫃', // 妊夫（男性）
+  '👈🏿', // 左矢印
+  '🫵', // 指を指す
+  '😂', // 爆笑
+];
+
+// ページ読み込み時に保存済み値を復元
+function loadSavedData() {
+  document.getElementById('token').value = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.token) || '';
+  document.getElementById('guildId').value = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.guildId) || '';
+  
+  const messageLimit = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.messageLimit);
+  if (messageLimit) document.getElementById('messageLimit').value = messageLimit;
+  
+  const reverseOrder = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.reverseOrder);
+  if (reverseOrder === 'true') document.getElementById('reverseOrder').checked = true;
+  
+  const useExternalEmojis = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.useExternalEmojis);
+  if (useExternalEmojis === 'true') document.getElementById('useExternalEmojis').checked = true;
+  
+  const interval = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.interval);
+  if (interval) document.getElementById('interval').value = interval;
+}
+
+// 入力値を保存
+function saveInputData() {
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.token, document.getElementById('token').value);
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.guildId, document.getElementById('guildId').value);
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.useExternalEmojis, document.getElementById('useExternalEmojis').checked);
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.messageLimit, document.getElementById('messageLimit').value);
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.reverseOrder, document.getElementById('reverseOrder').checked);
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.interval, document.getElementById('interval').value);
+}
+
+// 入力フィールドの変更を監視
+function updateEmojiInputState() {
+  // emoji inputがないので何もしない
+}
+
+// 選択中のチャンネルを保存（テキスト・ボイス問わずチェックされたもの）
+function saveSelectedChannels() {
+  const selected = Array.from(
+    document.querySelectorAll('#channelListContainer input[type="checkbox"]:checked')
+  ).map(el => el.value);
+  
+  localStorage.setItem(STORAGE_PREFIX + STORAGE_KEYS.channels, JSON.stringify(selected));
+}
+
+// 保存済みチャンネルを復元
+function restoreSelectedChannels() {
+  const savedChannels = localStorage.getItem(STORAGE_PREFIX + STORAGE_KEYS.channels);
+  if (!savedChannels) return;
+  
+  const channelIds = JSON.parse(savedChannels);
+  channelIds.forEach(id => {
+    const checkbox = document.querySelector(`#channelListContainer input[value="${id}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+      const label = checkbox.closest('label');
+      if (label) {
+        label.classList.add('checked');
+      }
+    }
+  });
+}
+
+// ログ出力
+function log(message) {
+  const logEl = document.getElementById('log');
+  const timestamp = new Date().toLocaleTimeString('ja-JP');
+  logEl.textContent += `[${timestamp}] ${message}\n`;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// TOKEN表示/隠すトグル
+document.getElementById('toggleTokenBtn').addEventListener('click', function() {
+  const t = document.getElementById('token');
+  const icon = document.getElementById('tokenMaskIcon');
+  if (t.type === 'password') {
+    t.type = 'text';
+    icon.innerHTML = '<svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-6 0-10-8-10-8a18.4 18.4 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.53 9.53A3 3 0 0 0 12 15a3 3 0 0 0 2.47-5.47"/><path d="M12 4c6 0 10 8 10 8a18.4 18.4 0 0 1-5.06 5.94"/></svg>';
+  } else {
+    t.type = 'password';
+    icon.innerHTML = '<svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>';
+  }
+});
+
+document.getElementById('token').addEventListener('input', saveInputData);
+document.getElementById('guildId').addEventListener('input', saveInputData);
+document.getElementById('useExternalEmojis').addEventListener('change', () => {
+  saveInputData();
+  updateEmojiInputState();
+});
+document.getElementById('messageLimit').addEventListener('input', saveInputData);
+document.getElementById('reverseOrder').addEventListener('change', saveInputData);
+document.getElementById('interval').addEventListener('input', saveInputData);
+
+// ページロード時にも状態を反映
+window.addEventListener('DOMContentLoaded', () => {
+  loadSavedData();
+  updateEmojiInputState();
+});
+
+// チャンネルリスト取得
+document.getElementById('fetchChannelsBtn').addEventListener('click', async () => {
+  const token = document.getElementById('token').value.trim();
+  const guildId = document.getElementById('guildId').value.trim();
+  
+  if (!token || !guildId) {
+    alert('トークンとサーバーIDを入力してください');
+    return;
+  }
+  
+  try {
+    log('チャンネル一覧取得中...');
+    const response = await fetch(`${API_BASE}/guilds/${guildId}/channels`, {
+      headers: { Authorization: token }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`エラー: ${response.status} ${response.statusText}`);
+    }
+    
+    const channels = await response.json();
+    // 表示対象チャンネル（テキスト・ボイス・アナウンス）
+    const displayChannels = channels.filter(ch => ch.type === 0 || ch.type === 2 || ch.type === 5);
+    
+    if (displayChannels.length === 0) {
+      log('表示するチャンネルが見つかりません');
+      document.getElementById('channelListContainer').style.display = 'none';
+      return;
+    }
+    
+    // チャンネルリストを表示（Discord 左バー順）
+    const container = document.getElementById('channelListContainer');
+    container.innerHTML = '';
+
+    
+    // カテゴリ情報を取得
+    const categoryMap = {};
+    channels.forEach(ch => {
+      if (ch.type === 4) {
+        categoryMap[ch.id] = { name: ch.name, position: ch.position };
+      }
+    });
+    
+    // カテゴリごとにチャンネルをグループ化
+    const categorized = {};
+    displayChannels.forEach(ch => {
+      const catId = ch.parent_id || 'uncategorized';
+      if (!categorized[catId]) {
+        categorized[catId] = [];
+      }
+      categorized[catId].push(ch);
+    });
+    
+    // カテゴリをpositionでソート
+    const categoryOrder = Object.keys(categorized).sort((a, b) => {
+      const posA = a === 'uncategorized' ? -1 : (categoryMap[a]?.position ?? 999);
+      const posB = b === 'uncategorized' ? -1 : (categoryMap[b]?.position ?? 999);
+      return posA - posB;
+    });
+    
+    // カテゴリごとに表示
+    categoryOrder.forEach(catId => {
+      // カテゴリ名表示
+      let categoryName = 'その他';
+      if (catId !== 'uncategorized') {
+        categoryName = categoryMap[catId]?.name || 'その他';
+      }
+      const catDiv = document.createElement('div');
+      catDiv.className = 'channel-category';
+      catDiv.textContent = categoryName;
+      container.appendChild(catDiv);
+      
+      // カテゴリ内のチャンネルをタイプ別に分ける（テキスト優先）
+      const textChannelsInCat = categorized[catId].filter(ch => ch.type === 0 || ch.type === 5).sort((a, b) => a.position - b.position);
+      const voiceChannelsInCat = categorized[catId].filter(ch => ch.type === 2).sort((a, b) => a.position - b.position);
+      
+      // テキスト/アナウンスチャンネルを先に表示
+      textChannelsInCat.forEach(ch => {
+        const item = document.createElement('div');
+        item.className = 'channel-item custom-checkbox-item';
+        item.innerHTML = `
+          <label>
+            <input type="checkbox" value="${ch.id}" data-channel="${ch.name}">
+            <span>#${ch.name}</span>
+          </label>
+        `;
+        container.appendChild(item);
+      });
+      
+      // ボイスチャンネルを後に表示（チェックボックス付き）
+      voiceChannelsInCat.forEach(ch => {
+        const item = document.createElement('div');
+        item.className = 'voice-channel-item custom-checkbox-item';
+        item.innerHTML = `
+          <label>
+            <input type="checkbox" value="${ch.id}" data-channel="${ch.name}">
+            <span class="voice-channel-icon">🔊</span><span>${ch.name}</span>
+          </label>
+        `;
+        container.appendChild(item);
+      });
+    });
+    
+    // テキストチャンネルのチェックボックス変更時に保存
+    document.querySelectorAll('#channelListContainer input[type="checkbox"]').forEach(checkbox => {
+      // 初期状態を設定
+      const label = checkbox.closest('label');
+      if (checkbox.checked && label) {
+        label.classList.add('checked');
+      }
+      
+      // changeイベント時に保存とクラス更新
+      checkbox.addEventListener('change', function() {
+        const label = this.closest('label');
+        if (this.checked && label) {
+          label.classList.add('checked');
+        } else if (label) {
+          label.classList.remove('checked');
+        }
+        saveSelectedChannels();
+      });
+    });
+    
+    container.style.display = 'block';
+    log(`${displayChannels.length}個のチャンネルを取得しました`);
+    document.getElementById('submitBtn').disabled = false;
+    
+    // 保存済みチャンネルを復元
+    restoreSelectedChannels();
+    
+  } catch (error) {
+    log(`エラー: ${error.message}`);
+    document.getElementById('channelListContainer').style.display = 'none';
+  }
+});
+
+// メインのリアクション実行
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const token = document.getElementById('token').value.trim();
+  const guildId = document.getElementById('guildId').value.trim();
+  const emoji = document.getElementById('emoji')?.value?.trim();
+  const useExternalEmojis = document.getElementById('useExternalEmojis').checked;
+  const reverseOrder = document.getElementById('reverseOrder').checked;
+  const messageLimit = parseInt(document.getElementById('messageLimit').value);
+  const interval = parseInt(document.getElementById('interval').value) || 0;
+  
+  const selectedChannels = Array.from(
+    document.querySelectorAll('#channelListContainer input[type="checkbox"]:checked')
+  ).map(el => ({
+    id: el.value,
+    name: el.dataset.channel
+  }));
+  
+  if (selectedChannels.length === 0) {
+    alert('チャンネルを選択してください');
+    return;
+  }
+  
+  const allSelectedChannels = selectedChannels;
+  
+  // Nitro オフ時は固定絵文字セットを使用するため入力不要
+  
+  isRunning = true;
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+  
+  const emojiList = useExternalEmojis
+    ? NITRO_EMOJIS
+    : DEFAULT_EMOJIS;
+  log(`リアクション開始: ${useExternalEmojis ? 'Nitro絵文字' : 'デフォルト絵文字'} (${emojiList.length}種) を使用, チャンネル=${allSelectedChannels.length}個, 間隔=${interval}ms`);
+  
+  for (const channel of allSelectedChannels) {
+    if (!isRunning) break;
+    
+    try {
+      log(`チャンネル #${channel.name} を処理中...`);
+      
+      // メッセージ取得
+      const messagesUrl = `${API_BASE}/channels/${channel.id}/messages?limit=${messageLimit}`;
+      const messagesResp = await fetch(messagesUrl, {
+        headers: { Authorization: token }
+      });
+      
+      if (!messagesResp.ok) {
+        log(`#${channel.name}: メッセージ取得失敗 (${messagesResp.status})`);
+        continue;
+      }
+      
+      let messages = await messagesResp.json();
+      
+      if (reverseOrder) {
+        messages = messages.reverse();
+      }
+      
+      for (const msg of messages) {
+        if (!isRunning) break;
+        
+        try {
+          // 1メッセージに対して全絵文字を順に付与
+          for (const emojiParam of emojiList) {
+            if (!isRunning) break;
+            const reactionUrl = `${API_BASE}/channels/${channel.id}/messages/${msg.id}/reactions/${emojiParam}/@me`;
+
+            const reactionResp = await fetch(reactionUrl, {
+              method: 'PUT',
+              headers: { Authorization: token }
+            });
+
+            if (reactionResp.ok) {
+              log(`  ✓ [#${channel.name}] ${emojiParam} を ${msg.id} に追加`);
+            } else if (reactionResp.status === 429) {
+              log(`  ⏱ レート制限: ${reactionResp.headers.get('retry-after')}秒待機中...`);
+              const retryAfter = parseFloat(reactionResp.headers.get('retry-after')) * 1000;
+              await new Promise(resolve => setTimeout(resolve, retryAfter + 100));
+            } else {
+              log(`  ✗ [#${channel.name}] ${emojiParam} リアクション失敗 (${reactionResp.status})`);
+            }
+
+            await new Promise(resolve => setTimeout(resolve, interval));
+          }
+        } catch (error) {
+          log(`  エラー (メッセージ処理): ${error.message}`);
+        }
+      }
+      
+      log(`✓ チャンネル #${channel.name} 完了`);
+      
+    } catch (error) {
+      log(`エラー (#${channel.name}): ${error.message}`);
+    }
+  }
+  
+  isRunning = false;
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+  log('リアクション処理完了');
+});
+
+// 停止ボタン
+document.getElementById('stopBtn').addEventListener('click', () => {
+  isRunning = false;
+  log('処理を停止しました');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+});
+
+
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"5185d1d6e63d4bd5800122b2e417eaa5","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
